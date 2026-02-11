@@ -80,6 +80,170 @@ Platform
 
 ---
 
+
+## 🗂️ COMPLETE PROJECT FOLDER STRUCTURE
+
+```
+
+blog-platform/
+│
+├── backend/
+│   ├── config/
+│   │   └── db.js                          # MongoDB connection
+│   │
+│   ├── models/
+│   │   ├── User.js                        # User model with roles
+│   │   ├── Organization.js                # Organization model
+│   │   ├── Department.js                  # Department model
+│   │   ├── Blog.js                        # Blog/Post model
+│   │   ├── Comment.js                     # Comment model
+│   │   ├── Like.js                        # Like model
+│   │   └── Verification.js                # Verification request model
+│   │
+│   ├── controllers/
+│   │   ├── authController.js              # Authentication logic
+│   │   ├── userController.js              # User profile & verification requests
+│   │   ├── organizationController.js      # Organization CRUD
+│   │   ├── departmentController.js        # Department CRUD
+│   │   ├── blogController.js              # Blog CRUD & filtering
+│   │   ├── commentController.js           # Comment CRUD
+│   │   ├── likeController.js              # Like/Unlike logic
+│   │   └── adminController.js             # Admin-specific actions
+│   │
+│   ├── middlewares/
+│   │   ├── authMiddleware.js              # JWT verification & role checking
+│   │   ├── roleMiddleware.js              # Role-based authorization
+│   │   ├── membershipMiddleware.js        # Org/Dept membership checks
+│   │   ├── validationMiddleware.js        # Input validation
+│   │   └── errorMiddleware.js             # Global error handler
+│   │
+│   ├── routes/
+│   │   ├── authRoutes.js                  # /api/auth/*
+│   │   ├── userRoutes.js                  # /api/users/*
+│   │   ├── organizationRoutes.js          # /api/organizations/*
+│   │   ├── departmentRoutes.js            # /api/departments/*
+│   │   ├── blogRoutes.js                  # /api/blogs/*
+│   │   ├── commentRoutes.js               # /api/comments/*
+│   │   ├── likeRoutes.js                  # /api/likes/*
+│   │   └── adminRoutes.js                 # /api/admin/*
+│   │
+│   ├── utils/
+│   │   ├── generateToken.js               # JWT token generation
+│   │   ├── seedData.js                    # Database seeding script
+│   │   └── constants.js                   # Role constants, enums
+│   │
+│   ├── .env                               # Environment variables
+│   ├── .gitignore                         # Git ignore file
+│   ├── package.json                       # Backend dependencies
+│   └── server.js                          # Express app entry point
+│
+├── frontend/
+│   ├── public/
+│   │   └── favicon.ico
+│   │
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── common/
+│   │   │   │   ├── Navbar.jsx
+│   │   │   │   ├── Footer.jsx
+│   │   │   │   ├── Loader.jsx
+│   │   │   │   ├── ErrorMessage.jsx
+│   │   │   │   └── ProtectedRoute.jsx
+│   │   │   │
+│   │   │   ├── blog/
+│   │   │   │   ├── BlogCard.jsx
+│   │   │   │   ├── BlogList.jsx
+│   │   │   │   ├── BlogDetail.jsx
+│   │   │   │   ├── BlogForm.jsx
+│   │   │   │   ├── CommentSection.jsx
+│   │   │   │   └── LikeButton.jsx
+│   │   │   │
+│   │   │   ├── organization/
+│   │   │   │   ├── OrganizationCard.jsx
+│   │   │   │   ├── OrganizationList.jsx
+│   │   │   │   └── OrganizationDetail.jsx
+│   │   │   │
+│   │   │   ├── department/
+│   │   │   │   ├── DepartmentCard.jsx
+│   │   │   │   ├── DepartmentList.jsx
+│   │   │   │   └── DepartmentDetail.jsx
+│   │   │   │
+│   │   │   └── admin/
+│   │   │       ├── SuperAdminPanel.jsx
+│   │   │       ├── OrgAdminPanel.jsx
+│   │   │       ├── DeptAdminPanel.jsx
+│   │   │       ├── VerificationRequests.jsx
+│   │   │       └── StatisticsCard.jsx
+│   │   │
+│   │   ├── pages/
+│   │   │   ├── auth/
+│   │   │   │   ├── Register.jsx
+│   │   │   │   └── Login.jsx
+│   │   │   │
+│   │   │   ├── public/
+│   │   │   │   ├── Home.jsx               # Landing page with global feed
+│   │   │   │   ├── Organizations.jsx      # List all organizations
+│   │   │   │   ├── OrganizationPage.jsx   # Single org page
+│   │   │   │   ├── DepartmentPage.jsx     # Single dept page
+│   │   │   │   └── BlogPage.jsx           # Single blog view
+│   │   │   │
+│   │   │   ├── user/
+│   │   │   │   ├── Dashboard.jsx          # User dashboard
+│   │   │   │   ├── MyBlogs.jsx
+│   │   │   │   ├── CreateBlog.jsx
+│   │   │   │   ├── Profile.jsx
+│   │   │   │   └── RequestVerification.jsx
+│   │   │   │
+│   │   │   └── admin/
+│   │   │       ├── SuperAdminDashboard.jsx
+│   │   │       ├── OrgAdminDashboard.jsx
+│   │   │       └── DeptAdminDashboard.jsx
+│   │   │
+│   │   ├── contexts/
+│   │   │   ├── AuthContext.jsx
+│   │   │   ├── OrganizationContext.jsx
+│   │   │   └── BlogContext.jsx
+│   │   │
+│   │   ├── services/
+│   │   │   ├── api.js                     # Axios instance
+│   │   │   ├── authAPI.js
+│   │   │   ├── organizationAPI.js
+│   │   │   ├── departmentAPI.js
+│   │   │   ├── blogAPI.js
+│   │   │   ├── commentAPI.js
+│   │   │   └── adminAPI.js
+│   │   │
+│   │   ├── hooks/
+│   │   │   ├── useAuth.js
+│   │   │   ├── useOrganizations.js
+│   │   │   └── useBlogs.js
+│   │   │
+│   │   ├── utils/
+│   │   │   ├── constants.js               # Role constants matching backend
+│   │   │   ├── helpers.js
+│   │   │   └── validation.js
+│   │   │
+│   │   ├── styles/
+│   │   │   ├── global.css
+│   │   │   └── variables.css
+│   │   │
+│   │   ├── App.jsx
+│   │   ├── main.jsx
+│   │   └── index.css
+│   │
+│   ├── .gitignore
+│   ├── package.json
+│   ├── vite.config.js
+│   └── index.html
+│
+├── docker-compose.yml                     # MongoDB + Backend containers
+├── .gitignore
+└── README.md                              # Project documentation
+
+```
+
+---
+
 ## 👥 USER ROLES & PERMISSIONS
 
 ### 1. 🌍 GLOBAL USER (Unverified)
@@ -495,7 +659,7 @@ Tracks pending/approved/rejected verification requests.
 
 ## 📅 PROJECT PHASES
 
-### **PHASE 1: Database Design & Models** (Day 1-2) ✅ CURRENT
+### **PHASE 1: Database Design & Models** (Day 1-2)
 - Design complete ER diagram
 - Create all 7 Mongoose models
 - Set up relationships (refs, virtuals, populations)
