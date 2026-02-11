@@ -85,7 +85,7 @@ Platform
 
 ```
 
-blog-platform/
+Multi-Org-Blog-Platform/
 │
 ├── backend/
 │   ├── config/
