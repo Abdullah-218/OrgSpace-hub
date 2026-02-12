@@ -98,7 +98,7 @@ Multi-Org-Blog-Platform/
 │   │   ├── Blog.js                        # Blog/Post model
 │   │   ├── Comment.js                     # Comment model
 │   │   ├── Like.js                        # Like model
-│   │   └── Verification.js                # Verification request model
+│   │   └── Verification .js               # Verification request model
 │   │
 │   ├── controllers/
 │   │   ├── authController.js              # Authentication logic
