@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import Department from './Department.js';
 
 const blogSchema = new mongoose.Schema(
   {

@@ -76,6 +76,7 @@ const userSchema = new mongoose.Schema(
 
 // ==================== INDEXES ====================
 // For fast queries
+
 userSchema.index({ email: 1 }); // Unique index automatically created
 userSchema.index({ orgId: 1 });
 userSchema.index({ deptId: 1 });
@@ -101,8 +102,13 @@ userSchema.pre('save', async function (next) {
 });
 
 // Validate: If verified, must have orgId and deptId
+// Validate: Only VERIFIED normal users must have org + dept
 userSchema.pre('save', function (next) {
-  if (this.verified && (!this.orgId || !this.deptId)) {
+  if (
+    this.verified &&
+    !['super_admin', 'global'].includes(this.role) &&
+    (!this.orgId || !this.deptId)
+  ) {
     return next(
       new Error('Verified users must have both organization and department')
     );

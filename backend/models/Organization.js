@@ -91,6 +91,7 @@ const organizationSchema = new mongoose.Schema(
 );
 
 // ==================== INDEXES ====================
+
 organizationSchema.index({ name: 1 }); // Unique index for fast lookup
 organizationSchema.index({ adminId: 1 }); // Find orgs by admin
 organizationSchema.index({ active: 1 }); // Filter active orgs
