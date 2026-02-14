@@ -55,7 +55,7 @@ app.use('/api/admin', adminRoutes);
 // Test route
 app.get('/', (req, res) => {
   res.json({
-    message: 'Blog Platform API',
+    message: 'Blog Platform API - Normal base slash',
     version: '1.0.0',
     status: 'running',
     endpoints: {
@@ -74,9 +74,18 @@ app.get('/', (req, res) => {
 // Health check
 app.get('/health', (req, res) => {
   res.json({
-    status: 'healthy',
+    status: 'Checking API health',
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
+  });
+});
+
+// API route slash
+app.get('/api', (req,res) => {
+  res.json({
+    message: 'Blog Platform API - Base API route',
+    status: 'running',
+    version: '1.0.0',
   });
 });
 
@@ -100,12 +109,12 @@ app.listen(PORT, () => {
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
   
   console.log('📋 Available Routes:');
-  console.log(`   Auth:         http://localhost:${PORT}/api/auth`);
-  console.log(`   Users:        http://localhost:${PORT}/api/users`);
+  console.log(`   Auth:          http://localhost:${PORT}/api/auth`);
+  console.log(`   Users:         http://localhost:${PORT}/api/users`);
   console.log(`   Organizations: http://localhost:${PORT}/api/organizations`);
-  console.log(`   Departments:  http://localhost:${PORT}/api/departments`);
-  console.log(`   Blogs:        http://localhost:${PORT}/api/blogs`);
-  console.log(`   Admin:        http://localhost:${PORT}/api/admin`);
+  console.log(`   Departments:   http://localhost:${PORT}/api/departments`);
+  console.log(`   Blogs:         http://localhost:${PORT}/api/blogs`);
+  console.log(`   Admin:         http://localhost:${PORT}/api/admin`);
   console.log('\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
 });
 
