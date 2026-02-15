@@ -1,5 +1,7 @@
 import User from '../models/User.js';
 import Verification from '../models/Verification.js';
+import Organization from '../models/Organization.js';
+import Department from '../models/Department.js';
 import generateToken from '../utils/generateToken.js';
 import { ROLES, MESSAGES } from '../utils/constants.js';
 
@@ -250,16 +252,84 @@ export const updateProfile = async (req, res) => {
  * @desc    Request verification for organization and department
  * @route   POST /api/auth/request-verification
  * @access  Private (authenticated users only)
+ * @body    Can accept either:
+ *          - { orgId, deptId } OR
+ *          - { organizationName, departmentName } OR
+ *          - Mix of both
  */
 export const requestVerification = async (req, res) => {
   try {
-    const { orgId, deptId, message } = req.body;
+    const { 
+      orgId, 
+      deptId, 
+      organizationName, 
+      departmentName, 
+      message 
+    } = req.body;
+
+    let finalOrgId = orgId;
+    let finalDeptId = deptId;
+
+    // If organization name provided, look up ID
+    if (organizationName && !orgId) {
+      const org = await Organization.findOne({ 
+        name: { $regex: new RegExp(`^${organizationName}$`, 'i') } // Case-insensitive
+      });
+
+      if (!org) {
+        return res.status(404).json({
+          success: false,
+          message: `Organization "${organizationName}" not found`,
+        });
+      }
+
+      finalOrgId = org._id;
+    }
+
+    // If department name provided, look up ID
+    if (departmentName && !deptId) {
+      const query = { 
+        name: { $regex: new RegExp(`^${departmentName}$`, 'i') } 
+      };
+      
+      // If we have orgId, search only in that organization
+      if (finalOrgId) {
+        query.orgId = finalOrgId;
+      }
+
+      const dept = await Department.findOne(query);
+
+      if (!dept) {
+        const orgInfo = finalOrgId ? ' in this organization' : '';
+        return res.status(404).json({
+          success: false,
+          message: `Department "${departmentName}" not found${orgInfo}`,
+        });
+      }
+
+      finalDeptId = dept._id;
+      
+      // If org wasn't specified, use the dept's org
+      if (!finalOrgId) {
+        finalOrgId = dept.orgId;
+      }
+    }
 
     // Validation
-    if (!orgId || !deptId) {
+    if (!finalOrgId || !finalDeptId) {
       return res.status(400).json({
         success: false,
-        message: 'Please provide organization and department',
+        message: 'Please provide organization and department (either IDs or names)',
+        hint: 'You can use: { orgId, deptId } OR { organizationName, departmentName }',
+      });
+    }
+
+    // Verify department belongs to organization
+    const dept = await Department.findById(finalDeptId);
+    if (dept.orgId.toString() !== finalOrgId.toString()) {
+      return res.status(400).json({
+        success: false,
+        message: 'Department does not belong to the specified organization',
       });
     }
 
@@ -274,8 +344,8 @@ export const requestVerification = async (req, res) => {
     // Check if user already has a pending request for this org/dept
     const existingRequest = await Verification.findOne({
       userId: req.user._id,
-      orgId,
-      deptId,
+      orgId: finalOrgId,
+      deptId: finalDeptId,
       status: 'pending',
     });
 
@@ -289,14 +359,14 @@ export const requestVerification = async (req, res) => {
     // Create verification request
     const verification = await Verification.create({
       userId: req.user._id,
-      orgId,
-      deptId,
+      orgId: finalOrgId,
+      deptId: finalDeptId,
       message: message || '',
       status: 'pending',
     });
 
     const populatedVerification = await Verification.findById(verification._id)
-      .populate('orgId', 'name')
+      .populate('orgId', 'name logo')
       .populate('deptId', 'name');
 
     res.status(201).json({
