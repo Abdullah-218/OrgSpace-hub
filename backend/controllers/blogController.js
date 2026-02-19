@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import Blog from '../models/Blog.js';
 import Comment from '../models/Comment.js';
 import Like from '../models/Like.js';
@@ -23,10 +24,44 @@ export const getBlogs = async (req, res) => {
       sort = '-createdAt',
     } = req.query;
 
+    // Validate ObjectIds
+    if (orgId && !mongoose.isValidObjectId(orgId)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid organization ID',
+      });
+    }
+    if (deptId && !mongoose.isValidObjectId(deptId)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid department ID',
+      });
+    }
+    if (authorId && !mongoose.isValidObjectId(authorId)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid author ID',
+      });
+    }
+
     const blogs = await Blog.getFiltered(
       { orgId, deptId, authorId, published, featured, tags, search },
       { page, limit, sort }
     );
+
+    // Add hasLiked status for each blog if user is authenticated
+    let blogsWithLikeStatus = blogs;
+    if (req.user) {
+      blogsWithLikeStatus = await Promise.all(
+        blogs.map(async (blog) => {
+          const hasLiked = await Like.hasLiked(blog._id, req.user._id);
+          return {
+            ...blog.toObject(),
+            hasLiked,
+          };
+        })
+      );
+    }
 
     const query = { published };
     if (orgId) query.orgId = orgId;
@@ -42,7 +77,7 @@ export const getBlogs = async (req, res) => {
       page: parseInt(page),
       pages: Math.ceil(total / limit),
       data: {
-        blogs,
+        blogs: blogsWithLikeStatus,
       },
     });
   } catch (error) {

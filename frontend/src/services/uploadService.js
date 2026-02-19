@@ -1,4 +1,4 @@
-import axios from 'axios';
+import api from './api';
 
 const uploadService = {
   // Upload single file
@@ -6,14 +6,10 @@ const uploadService = {
     const formData = new FormData();
     formData.append('image', file);
 
-    const response = await axios.post(
-      `${import.meta.env.VITE_API_URL}/upload?type=${type}`,
+    const response = await api.post(
+      `/upload?type=${type}`,
       formData,
       {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          'Authorization': `Bearer ${localStorage.getItem('blog_platform_token')}`,
-        },
         onUploadProgress: (progressEvent) => {
           if (onProgress) {
             const percentCompleted = Math.round(
@@ -36,14 +32,10 @@ const uploadService = {
       formData.append(`images`, file);
     });
 
-    const response = await axios.post(
-      `${import.meta.env.VITE_API_URL}/upload/multiple?type=${type}`,
+    const response = await api.post(
+      `/upload/multiple?type=${type}`,
       formData,
       {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          'Authorization': `Bearer ${localStorage.getItem('blog_platform_token')}`,
-        },
         onUploadProgress: (progressEvent) => {
           if (onProgress) {
             const percentCompleted = Math.round(
@@ -80,12 +72,9 @@ const uploadService = {
 
   // Delete uploaded file
   deleteFile: async (fileUrl) => {
-    const response = await axios.delete(
-      `${import.meta.env.VITE_API_URL}/upload`,
+    const response = await api.delete(
+      `/upload`,
       {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('blog_platform_token')}`,
-        },
         data: { fileUrl },
       }
     );

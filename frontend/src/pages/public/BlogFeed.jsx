@@ -4,7 +4,7 @@ import { Navbar, Footer, Container } from '../../components/layout';
 import { Card, SearchBar, Loading, EmptyState, Badge, Avatar, Pagination, Button } from '../../components/common';
 import blogService from '../../services/blogService';
 import { ROUTES } from '../../utils/constants';
-import { formatDate, truncate, formatNumber } from '../../utils/helpers';
+import { formatDate, truncate, formatNumber, getImageUrl } from '../../utils/helpers';
 import toast from 'react-hot-toast';
 
 const BlogFeed = () => {
@@ -104,7 +104,7 @@ const BlogFeed = () => {
                   {blog.coverImage && (
                     <div className="h-48 overflow-hidden">
                       <img
-                        src={blog.coverImage}
+                        src={getImageUrl(blog.coverImage)}
                         alt={blog.title}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       />
@@ -159,16 +159,23 @@ const BlogFeed = () => {
                       {/* Stats */}
                       <div className="flex items-center gap-3 text-sm text-gray-500">
                         <div className="flex items-center gap-1">
-                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <svg 
+                            className={`w-4 h-4 ${blog.hasLiked ? 'text-red-500' : ''}`}
+                            fill={blog.hasLiked ? 'currentColor' : 'none'}
+                            viewBox="0 0 24 24" 
+                            stroke="currentColor"
+                          >
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                           </svg>
-                          <span>{formatNumber(blog.likeCount || 0)}</span>
+                          <span>
+                            {formatNumber(blog.likesCount || 0)}
+                          </span>
                         </div>
                         <div className="flex items-center gap-1">
                           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                           </svg>
-                          <span>{formatNumber(blog.commentCount || 0)}</span>
+                          <span>{formatNumber(blog.commentsCount || 0)}</span>
                         </div>
                       </div>
                     </div>

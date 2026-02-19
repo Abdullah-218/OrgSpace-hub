@@ -205,9 +205,9 @@ const ManageOrganizations = () => {
                       <p className="text-gray-600 text-sm mb-4 line-clamp-2">{org.about}</p>
                       
                       <div className="flex items-center gap-4 text-sm text-gray-500 mb-4">
-                        <span>{formatNumber(org.memberCount || 0)} members</span>
+                        <span>{formatNumber(org.stats?.membersCount || 0)} members</span>
                         <span>·</span>
-                        <span>{formatNumber(org.departmentCount || 0)} depts</span>
+                        <span>{formatNumber(org.stats?.departmentsCount || 0)} depts</span>
                       </div>
                       
                       <div className="flex gap-2 pt-4 border-t border-gray-200">

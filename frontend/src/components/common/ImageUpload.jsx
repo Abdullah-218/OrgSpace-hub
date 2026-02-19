@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { cn, formatFileSize, isValidFileSize, isValidFileType } from '../../utils/helpers';
-import axios from 'axios';
+import uploadService from '../../services/uploadService';
 
 const ImageUpload = ({
   onUpload,
@@ -45,21 +45,10 @@ const ImageUpload = ({
 
     // Upload to backend
     setUploading(true);
-    const formData = new FormData();
-    formData.append('image', file);
 
     try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/upload?type=${type}`,
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        }
-      );
-
-      const imageUrl = response.data.data.url;
+      const response = await uploadService.uploadFile(file, type);
+      const imageUrl = response.data.url;
       if (onUpload) onUpload(imageUrl);
     } catch (err) {
       setUploadError(err.response?.data?.message || 'Upload failed');

@@ -286,3 +286,25 @@ export function createExcerpt(html, length = 150) {
   const text = stripHtml(html);
   return truncate(text, length);
 }
+
+/**
+ * Get full image URL
+ * Converts relative paths like /uploads/blogs/image.png to full URLs
+ */
+export function getImageUrl(imagePath) {
+  if (!imagePath) return '';
+  
+  // If already a full URL, return as is
+  if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+    return imagePath;
+  }
+  
+  // Get API base URL and remove '/api' suffix if present
+  const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
+  const baseUrl = apiUrl.replace('/api', '');
+  
+  // Ensure imagePath starts with /
+  const path = imagePath.startsWith('/') ? imagePath : `/${imagePath}`;
+  
+  return `${baseUrl}${path}`;
+}

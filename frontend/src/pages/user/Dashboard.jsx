@@ -209,9 +209,9 @@ const Dashboard = () => {
                       <div className="flex items-center gap-4 text-sm text-gray-500">
                         <span>{formatDate(blog.createdAt, 'relative')}</span>
                         <span>·</span>
-                        <span>{formatNumber(blog.likeCount || 0)} likes</span>
+                        <span>{formatNumber(blog.likesCount || 0)} likes</span>
                         <span>·</span>
-                        <span>{formatNumber(blog.commentCount || 0)} comments</span>
+                        <span>{formatNumber(blog.commentsCount || 0)} comments</span>
                       </div>
                     </div>
                     <Badge variant={blog.published ? 'success' : 'warning'}>

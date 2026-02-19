@@ -59,30 +59,26 @@ likeSchema.post('save', async function (doc) {
   await Blog.findByIdAndUpdate(doc.blogId, { $inc: { likesCount: 1 } });
 });
 
-// After remove: Decrement blog's like count
-likeSchema.post('remove', async function (doc) {
-  const Blog = mongoose.model('Blog');
-  const blog = await Blog.findById(doc.blogId);
-  if (blog && blog.likesCount > 0) {
-    blog.likesCount -= 1;
-    await blog.save();
-  }
-});
-
 // ==================== STATIC METHODS ====================
 
 // Toggle like (like if not liked, unlike if liked)
 likeSchema.statics.toggleLike = async function (blogId, userId) {
+  const Blog = mongoose.model('Blog');
+  
   try {
     // Check if already liked
     const existingLike = await this.findOne({ blogId, userId });
 
     if (existingLike) {
-      // Unlike: Remove the like
-      await existingLike.remove();
+      // Unlike: Remove the like and decrement count
+      await this.deleteOne({ _id: existingLike._id });
+      
+      // Decrement blog's like count
+      await Blog.findByIdAndUpdate(blogId, { $inc: { likesCount: -1 } });
+      
       return { liked: false, message: 'Blog unliked successfully' };
     } else {
-      // Like: Create new like
+      // Like: Create new like (post-save hook will increment count)
       const newLike = await this.create({ blogId, userId });
       return { liked: true, message: 'Blog liked successfully', like: newLike };
     }

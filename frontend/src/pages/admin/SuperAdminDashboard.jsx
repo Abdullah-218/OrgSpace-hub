@@ -225,7 +225,7 @@ const SuperAdminDashboard = () => {
                         <div>
                           <p className="font-medium text-gray-900">{org.name}</p>
                           <p className="text-sm text-gray-500">
-                            {formatNumber(org.memberCount || 0)} members
+                            {formatNumber(org.stats?.membersCount || 0)} members
                           </p>
                         </div>
                         <Badge variant={org.active ? 'success' : 'gray'}>

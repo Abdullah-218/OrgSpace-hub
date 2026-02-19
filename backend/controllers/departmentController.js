@@ -1,5 +1,7 @@
+import mongoose from 'mongoose';
 import Department from '../models/Department.js';
 import Blog from '../models/Blog.js';
+import Like from '../models/Like.js';
 import { MESSAGES } from '../utils/constants.js';
 
 /**
@@ -9,11 +11,22 @@ import { MESSAGES } from '../utils/constants.js';
  */
 export const getDepartments = async (req, res) => {
   try {
-    const { orgId, active = true, page = 1, limit = 20 } = req.query;
+    const { orgId, active, page = 1, limit = 20 } = req.query;
+
+    // Validate ObjectId if provided
+    if (orgId && !mongoose.isValidObjectId(orgId)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid organization ID',
+      });
+    }
 
     const query = {};
     if (orgId) query.orgId = orgId;
-    if (active !== undefined) query.active = active === 'true';
+    // Only filter by active if explicitly provided
+    if (active !== undefined) {
+      query.active = active === 'true' || active === true;
+    }
 
     const departments = await Department.find(query)
       .populate('orgId', 'name logo')
@@ -59,6 +72,14 @@ export const getDepartments = async (req, res) => {
  */
 export const getDepartmentById = async (req, res) => {
   try {
+    // Validate ObjectId
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid department ID',
+      });
+    }
+
     const department = await Department.findById(req.params.id)
       .populate('orgId', 'name logo about')
       .populate('adminIds', 'name email avatar')
@@ -77,6 +98,20 @@ export const getDepartmentById = async (req, res) => {
       .sort({ createdAt: -1 })
       .limit(5);
 
+    // Add hasLiked status if user is authenticated
+    let blogsWithLikeStatus = recentBlogs;
+    if (req.user) {
+      blogsWithLikeStatus = await Promise.all(
+        recentBlogs.map(async (blog) => {
+          const hasLiked = await Like.hasLiked(blog._id, req.user._id);
+          return {
+            ...blog.toObject(),
+            hasLiked,
+          };
+        })
+      );
+    }
+
     res.status(200).json({
       success: true,
       data: {
@@ -88,7 +123,7 @@ export const getDepartmentById = async (req, res) => {
           admins: department.adminIds,
           image: department.image,
           stats: department.stats,
-          recentBlogs,
+          recentBlogs: blogsWithLikeStatus,
           createdAt: department.createdAt,
         },
       },

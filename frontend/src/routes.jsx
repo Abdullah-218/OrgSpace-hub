@@ -7,6 +7,7 @@ const Home = lazy(() => import('./pages/public/Home'));
 const About = lazy(() => import('./pages/public/About'));
 const Organizations = lazy(() => import('./pages/public/Organizations'));
 const OrganizationDetail = lazy(() => import('./pages/public/OrganizationDetail'));
+const DepartmentDetail = lazy(() => import('./pages/public/DepartmentDetail'));
 const BlogFeed = lazy(() => import('./pages/public/BlogFeed'));
 const BlogDetailPage = lazy(() => import('./pages/public/BlogDetailPage'));
 const NotFound = lazy(() => import('./pages/public/NotFound'));
@@ -47,19 +48,43 @@ export const routes = [
   },
   {
     path: ROUTES.ORGANIZATIONS,
-    element: <Organizations />,
+    element: (
+      <ProtectedRoute>
+        <Organizations />
+      </ProtectedRoute>
+    ),
   },
   {
     path: ROUTES.ORGANIZATION_DETAIL(':id'),
-    element: <OrganizationDetail />,
+    element: (
+      <ProtectedRoute>
+        <OrganizationDetail />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: ROUTES.DEPARTMENT_DETAIL(':id'),
+    element: (
+      <ProtectedRoute>
+        <DepartmentDetail />
+      </ProtectedRoute>
+    ),
   },
   {
     path: ROUTES.BLOGS,
-    element: <BlogFeed />,
+    element: (
+      <ProtectedRoute>
+        <BlogFeed />
+      </ProtectedRoute>
+    ),
   },
   {
     path: ROUTES.BLOG_DETAIL(':id'),
-    element: <BlogDetailPage />,
+    element: (
+      <ProtectedRoute>
+        <BlogDetailPage />
+      </ProtectedRoute>
+    ),
   },
 
   // Auth Routes

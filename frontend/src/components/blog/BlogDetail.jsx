@@ -1,5 +1,5 @@
 import { Avatar, Badge, Button } from '../common';
-import { formatDate, formatNumber } from '../../utils/helpers';
+import { formatDate, formatNumber, getImageUrl } from '../../utils/helpers';
 import LikeButton from './LikeButton';
 import ShareButton from './ShareButton';
 import CommentSection from './CommentSection';
@@ -50,7 +50,7 @@ const BlogDetail = ({ blog, onLike, showComments = true }) => {
             <LikeButton
               blogId={blog._id}
               initialLiked={blog.hasLiked}
-              initialCount={blog.likeCount || 0}
+              initialCount={blog.likesCount || 0}
               onLike={onLike}
             />
             <ShareButton blog={blog} />
@@ -62,7 +62,7 @@ const BlogDetail = ({ blog, onLike, showComments = true }) => {
       {blog.coverImage && (
         <div className="rounded-lg overflow-hidden">
           <img
-            src={blog.coverImage}
+            src={getImageUrl(blog.coverImage)}
             alt={blog.title}
             className="w-full h-auto max-h-[500px] object-cover"
           />
@@ -88,13 +88,13 @@ const BlogDetail = ({ blog, onLike, showComments = true }) => {
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
               </svg>
-              <span>{formatNumber(blog.likeCount || 0)} likes</span>
+              <span>{formatNumber(blog.likesCount || 0)} likes</span>
             </div>
             <div className="flex items-center gap-1">
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
               </svg>
-              <span>{formatNumber(blog.commentCount || 0)} comments</span>
+              <span>{formatNumber(blog.commentsCount || 0)} comments</span>
             </div>
           </div>
         </div>

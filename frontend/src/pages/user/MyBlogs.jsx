@@ -4,7 +4,7 @@ import { Navbar, Footer, Container, ProtectedRoute } from '../../components/layo
 import { Card, Button, Badge, Loading, EmptyState, SearchBar, ConfirmDialog } from '../../components/common';
 import blogService from '../../services/blogService';
 import { ROUTES } from '../../utils/constants';
-import { formatDate, formatNumber } from '../../utils/helpers';
+import { formatDate, formatNumber, getImageUrl } from '../../utils/helpers';
 import toast from 'react-hot-toast';
 
 const MyBlogs = () => {
@@ -167,7 +167,7 @@ const MyBlogs = () => {
                     {blog.coverImage && (
                       <div className="w-32 h-32 flex-shrink-0 rounded-lg overflow-hidden">
                         <img
-                          src={blog.coverImage}
+                          src={getImageUrl(blog.coverImage)}
                           alt={blog.title}
                           className="w-full h-full object-cover"
                         />
@@ -194,11 +194,11 @@ const MyBlogs = () => {
                       <div className="flex items-center gap-4 text-sm text-gray-500 mb-3">
                         <span>{formatDate(blog.createdAt, 'short')}</span>
                         <span>·</span>
-                        <span>{formatNumber(blog.viewCount || 0)} views</span>
+                        <span>{formatNumber(blog.viewsCount || 0)} views</span>
                         <span>·</span>
-                        <span>{formatNumber(blog.likeCount || 0)} likes</span>
+                        <span>{formatNumber(blog.likesCount || 0)} likes</span>
                         <span>·</span>
-                        <span>{formatNumber(blog.commentCount || 0)} comments</span>
+                        <span>{formatNumber(blog.commentsCount || 0)} comments</span>
                       </div>
 
                       {/* Actions */}

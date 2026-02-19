@@ -132,6 +132,7 @@ export const ROUTES = {
   // Public
   ORGANIZATIONS: '/organizations',
   ORGANIZATION_DETAIL: (id) => `/organizations/${id}`,
+  DEPARTMENT_DETAIL: (id) => `/departments/${id}`,
   BLOGS: '/blogs',
   BLOG_DETAIL: (id) => `/blogs/${id}`,
   

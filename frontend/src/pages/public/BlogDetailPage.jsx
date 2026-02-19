@@ -5,7 +5,7 @@ import { Navbar, Footer, Container } from '../../components/layout';
 import { Card, Loading, Badge, Avatar, Button } from '../../components/common';
 import blogService from '../../services/blogService';
 import { ROUTES } from '../../utils/constants';
-import { formatDate, formatNumber } from '../../utils/helpers';
+import { formatDate, formatNumber, getImageUrl } from '../../utils/helpers';
 import toast from 'react-hot-toast';
 
 const BlogDetailPage = () => {
@@ -27,7 +27,7 @@ const BlogDetailPage = () => {
       const response = await blogService.getBlogById(id);
       setBlog(response.data.blog);
       setLiked(response.data.blog.hasLiked);
-      setLikeCount(response.data.blog.likeCount || 0);
+      setLikeCount(response.data.blog.likesCount || 0);
     } catch (error) {
       toast.error('Failed to load blog');
       navigate(ROUTES.BLOGS);
@@ -86,7 +86,7 @@ const BlogDetailPage = () => {
             {/* Cover Image */}
             {blog.coverImage && (
               <img
-                src={blog.coverImage}
+                src={getImageUrl(blog.coverImage)}
                 alt={blog.title}
                 className="w-full h-96 object-cover rounded-lg mb-6"
               />

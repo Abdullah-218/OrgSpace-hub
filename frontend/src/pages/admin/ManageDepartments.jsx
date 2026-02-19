@@ -176,9 +176,9 @@ const ManageDepartments = () => {
                       </p>
                       
                       <div className="flex items-center gap-4 text-sm text-gray-500 mb-4">
-                        <span>{formatNumber(dept.memberCount || 0)} members</span>
+                        <span>{formatNumber(dept.stats?.membersCount || 0)} members</span>
                         <span>·</span>
-                        <span>{formatNumber(dept.blogCount || 0)} blogs</span>
+                        <span>{formatNumber(dept.stats?.blogsCount || 0)} blogs</span>
                       </div>
                       
                       <div className="flex gap-2 pt-4 border-t border-gray-200">

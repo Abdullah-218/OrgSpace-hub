@@ -41,6 +41,7 @@ import blogRoutes from './routes/blogRoutes.js';
 import commentRoutes from './routes/commentRoutes.js';
 import likeRoutes from './routes/likeRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
+import uploadRoutes from './routes/uploadRoutes.js';
 
 // Mount routes
 app.use('/api/auth', authRoutes);
@@ -51,6 +52,7 @@ app.use('/api/blogs', blogRoutes);
 app.use('/api', commentRoutes); // Includes /api/blogs/:blogId/comments and /api/comments/:id
 app.use('/api', likeRoutes); // Includes /api/blogs/:blogId/like, etc.
 app.use('/api/admin', adminRoutes);
+app.use('/api/upload', uploadRoutes);
 
 // Test route
 app.get('/', (req, res) => {

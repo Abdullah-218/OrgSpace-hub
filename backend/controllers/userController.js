@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import User from '../models/User.js';
 import Blog from '../models/Blog.js';
 import { MESSAGES } from '../utils/constants.js';
@@ -9,6 +10,13 @@ import { MESSAGES } from '../utils/constants.js';
  */
 export const getUserById = async (req, res) => {
   try {
+    // Validate ObjectId
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid user ID',
+      });
+    }
     const user = await User.findById(req.params.id)
       .select('-password')
       .populate('orgId', 'name logo')
@@ -204,6 +212,14 @@ export const getUsersByDept = async (req, res) => {
   try {
     const { deptId } = req.params;
     const { page = 1, limit = 20 } = req.query;
+
+    // Validate ObjectId
+    if (!mongoose.isValidObjectId(deptId)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid department ID',
+      });
+    }
 
     const users = await User.findByDept(deptId)
       .select('-password')

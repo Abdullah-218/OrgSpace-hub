@@ -1,6 +1,8 @@
+import mongoose from 'mongoose';
 import Organization from '../models/Organization.js';
 import Department from '../models/Department.js';
 import Blog from '../models/Blog.js';
+import Like from '../models/Like.js';
 import { MESSAGES } from '../utils/constants.js';
 
 /**
@@ -10,10 +12,13 @@ import { MESSAGES } from '../utils/constants.js';
  */
 export const getOrganizations = async (req, res) => {
   try {
-    const { active = true, page = 1, limit = 20 } = req.query;
+    const { active, page = 1, limit = 20 } = req.query;
 
     const query = {};
-    if (active !== undefined) query.active = active === 'true';
+    // Only filter by active if explicitly provided
+    if (active !== undefined) {
+      query.active = active === 'true' || active === true;
+    }
 
     const organizations = await Organization.find(query)
       .populate('adminId', 'name email avatar')
@@ -60,6 +65,14 @@ export const getOrganizations = async (req, res) => {
  */
 export const getOrganizationById = async (req, res) => {
   try {
+    // Validate ObjectId
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid organization ID',
+      });
+    }
+
     const organization = await Organization.findById(req.params.id)
       .populate('adminId', 'name email avatar')
       .populate('departments'); // Virtual populate
@@ -78,6 +91,20 @@ export const getOrganizationById = async (req, res) => {
       .sort({ createdAt: -1 })
       .limit(5);
 
+    // Add hasLiked status if user is authenticated
+    let blogsWithLikeStatus = recentBlogs;
+    if (req.user) {
+      blogsWithLikeStatus = await Promise.all(
+        recentBlogs.map(async (blog) => {
+          const hasLiked = await Like.hasLiked(blog._id, req.user._id);
+          return {
+            ...blog.toObject(),
+            hasLiked,
+          };
+        })
+      );
+    }
+
     res.status(200).json({
       success: true,
       data: {
@@ -94,7 +121,7 @@ export const getOrganizationById = async (req, res) => {
           commentsEnabled: organization.commentsEnabled,
           stats: organization.stats,
           departments: organization.departments,
-          recentBlogs,
+          recentBlogs: blogsWithLikeStatus,
           createdAt: organization.createdAt,
         },
       },

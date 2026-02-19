@@ -8,7 +8,7 @@ import {
   deleteOrganization,
   getOrganizationStats,
 } from '../controllers/organizationController.js';
-import { authenticate } from '../middlewares/authMiddleware.js';
+import { authenticate, optionalAuthenticate } from '../middlewares/authMiddleware.js';
 import { requireSuperAdmin, requireOrgAdmin } from '../middlewares/roleMiddleware.js';
 
 const router = express.Router();
@@ -25,9 +25,9 @@ router.get('/', getOrganizations);
 /**
  * @route   GET /api/organizations/:id
  * @desc    Get organization by ID with departments and recent blogs
- * @access  Public
+ * @access  Public (optionally authenticated to see hasLiked)
  */
-router.get('/:id', getOrganizationById);
+router.get('/:id', optionalAuthenticate, getOrganizationById);
 
 /**
  * @route   GET /api/organizations/:id/stats

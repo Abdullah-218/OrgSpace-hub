@@ -5,7 +5,7 @@ import { Card, Loading, EmptyState, Badge, Avatar, SearchBar } from '../../compo
 import blogService from '../../services/blogService';
 import { useAuth } from '../../context/AuthContext';
 import { ROUTES } from '../../utils/constants';
-import { formatDate, truncate, formatNumber } from '../../utils/helpers';
+import { formatDate, truncate, formatNumber, getImageUrl } from '../../utils/helpers';
 import toast from 'react-hot-toast';
 
 const LikedBlogs = () => {
@@ -98,7 +98,7 @@ const LikedBlogs = () => {
                     {blog.coverImage && (
                       <div className="h-48 overflow-hidden">
                         <img
-                          src={blog.coverImage}
+                          src={getImageUrl(blog.coverImage)}
                           alt={blog.title}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                         />

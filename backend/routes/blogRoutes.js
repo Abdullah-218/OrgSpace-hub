@@ -25,9 +25,9 @@ router.get('/trending', getTrendingBlogs);
 /**
  * @route   GET /api/blogs?page=1&limit=10&orgId=...&deptId=...&authorId=...
  * @desc    Get all published blogs with filters and pagination
- * @access  Public
+ * @access  Public (optionally authenticated to see hasLiked)
  */
-router.get('/', getBlogs);
+router.get('/', optionalAuthenticate, getBlogs);
 
 /**
  * @route   GET /api/blogs/:id

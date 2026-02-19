@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Navbar, Footer, Container } from '../../components/layout';
 import { Card, Loading, Badge, Button, EmptyState } from '../../components/common';
+import { BlogCard } from '../../components/blog';
 import organizationService from '../../services/organizationService';
 import { ROUTES } from '../../utils/constants';
 import { formatNumber } from '../../utils/helpers';
@@ -20,10 +21,15 @@ const OrganizationDetail = () => {
   const fetchOrganization = async () => {
     try {
       const response = await organizationService.getOrganizationById(id);
-      setOrganization(response.data.organization);
+      if (response.data?.organization) {
+        setOrganization(response.data.organization);
+      } else {
+        throw new Error('Invalid organization data');
+      }
     } catch (error) {
-      toast.error('Failed to load organization');
-      navigate(ROUTES.ORGANIZATIONS);
+      console.error('Error fetching organization:', error);
+      toast.error(error.response?.data?.message || 'Failed to load organization');
+      setTimeout(() => navigate(ROUTES.ORGANIZATIONS), 1000);
     } finally {
       setLoading(false);
     }
@@ -67,7 +73,7 @@ const OrganizationDetail = () => {
                   <img src={organization.logo} alt={organization.name} className="w-full h-full object-cover rounded-xl" />
                 ) : (
                   <span className="text-5xl font-bold text-white">
-                    {organization.name.charAt(0)}
+                    {organization.name?.charAt(0) || 'O'}
                   </span>
                 )}
               </div>
@@ -125,7 +131,7 @@ const OrganizationDetail = () => {
               </div>
               <div>
                 <div className="text-2xl font-bold text-gray-900">
-                  {formatNumber(organization.memberCount || 0)}
+                  {formatNumber(organization.stats?.membersCount || 0)}
                 </div>
                 <div className="text-sm text-gray-600">Members</div>
               </div>
@@ -141,7 +147,7 @@ const OrganizationDetail = () => {
               </div>
               <div>
                 <div className="text-2xl font-bold text-gray-900">
-                  {formatNumber(organization.departmentCount || 0)}
+                  {formatNumber(organization.stats?.departmentsCount || 0)}
                 </div>
                 <div className="text-sm text-gray-600">Departments</div>
               </div>
@@ -157,7 +163,7 @@ const OrganizationDetail = () => {
               </div>
               <div>
                 <div className="text-2xl font-bold text-gray-900">
-                  {formatNumber(organization.blogCount || 0)}
+                  {formatNumber(organization.stats?.blogsCount || 0)}
                 </div>
                 <div className="text-sm text-gray-600">Blog Posts</div>
               </div>
@@ -166,13 +172,18 @@ const OrganizationDetail = () => {
         </div>
 
         {/* Departments */}
-        <div>
+        <div className="mb-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Departments</h2>
 
           {organization.departments && organization.departments.length > 0 ? (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {organization.departments.map((dept) => (
-                <Card key={dept._id} hover className="cursor-pointer">
+                <Card 
+                  key={dept._id} 
+                  hover 
+                  className="cursor-pointer"
+                  onClick={() => navigate(ROUTES.DEPARTMENT_DETAIL(dept.id || dept._id))}
+                >
                   <h3 className="text-lg font-semibold text-gray-900 mb-2">
                     {dept.name}
                   </h3>
@@ -180,8 +191,8 @@ const OrganizationDetail = () => {
                     {dept.description || 'No description available'}
                   </p>
                   <div className="flex items-center gap-4 text-sm text-gray-500">
-                    <span>{formatNumber(dept.memberCount || 0)} members</span>
-                    <span>{formatNumber(dept.blogCount || 0)} posts</span>
+                    <span>{formatNumber(dept.stats?.membersCount || 0)} members</span>
+                    <span>{formatNumber(dept.stats?.blogsCount || 0)} posts</span>
                   </div>
                 </Card>
               ))}
@@ -190,6 +201,29 @@ const OrganizationDetail = () => {
             <EmptyState
               title="No departments yet"
               description="This organization hasn't created any departments"
+            />
+          )}
+        </div>
+
+        {/* Blog Posts */}
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">Recent Blog Posts</h2>
+          
+          {organization.recentBlogs && organization.recentBlogs.length > 0 ? (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {organization.recentBlogs.map((blog) => (
+                <BlogCard key={blog.id || blog._id} blog={blog} />
+              ))}
+            </div>
+          ) : (
+            <EmptyState
+              title="No blog posts yet"
+              description="This organization hasn't published any blogs yet"
+              icon={
+                <svg className="w-12 h-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
+              }
             />
           )}
         </div>

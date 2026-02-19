@@ -3,9 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { Select, Textarea, Button, Alert, Card, Loading } from '../../components/common';
 import { Container } from '../../components/layout';
-import organizationService from '../../services/organizationService';
+import { organizationService, departmentService, authService } from '../../services';
 import { ROUTES } from '../../utils/constants';
-import authService from '../../services/authService';
 import toast from 'react-hot-toast';
 
 const RequestVerification = () => {
@@ -45,7 +44,7 @@ const RequestVerification = () => {
   const fetchOrganizations = async () => {
     try {
       const response = await organizationService.getOrganizations();
-      setOrganizations(response.data.organizations);
+      setOrganizations(response.data?.organizations || []);
     } catch (error) {
       console.error('Error fetching organizations:', error);
       toast.error('Failed to load organizations');
@@ -62,14 +61,8 @@ const RequestVerification = () => {
       if (!org) return;
 
       // Fetch departments for this organization
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/departments/organization/${org.id}`
-      );
-      const data = await response.json();
-      
-      if (data.success) {
-        setDepartments(data.data.departments);
-      }
+      const response = await departmentService.getDepartmentsByOrganization(org.id);
+      setDepartments(response.data?.departments || []);
     } catch (error) {
       console.error('Error fetching departments:', error);
       toast.error('Failed to load departments');

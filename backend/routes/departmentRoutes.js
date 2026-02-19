@@ -8,7 +8,7 @@ import {
   getDepartmentsByOrg,
   getDepartmentStats,
 } from '../controllers/departmentController.js';
-import { authenticate } from '../middlewares/authMiddleware.js';
+import { authenticate, optionalAuthenticate } from '../middlewares/authMiddleware.js';
 import { requireOrgAdmin } from '../middlewares/roleMiddleware.js';
 
 const router = express.Router();
@@ -32,9 +32,9 @@ router.get('/organization/:orgId', getDepartmentsByOrg);
 /**
  * @route   GET /api/departments/:id
  * @desc    Get department by ID with recent blogs
- * @access  Public
+ * @access  Public (optionally authenticated to see hasLiked)
  */
-router.get('/:id', getDepartmentById);
+router.get('/:id', optionalAuthenticate, getDepartmentById);
 
 /**
  * @route   GET /api/departments/:id/stats

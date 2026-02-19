@@ -272,7 +272,7 @@ const OrgAdminDashboard = () => {
                       <div>
                         <p className="font-medium text-gray-900">{dept.name}</p>
                         <p className="text-sm text-gray-500">
-                          {formatNumber(dept.memberCount || 0)} members · {formatNumber(dept.blogCount || 0)} blogs
+                            {formatNumber(dept.stats?.membersCount || 0)} members · {formatNumber(dept.stats?.blogsCount || 0)} blogs
                         </p>
                       </div>
                       <Badge variant="success">Active</Badge>
