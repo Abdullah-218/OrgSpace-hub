@@ -101,18 +101,28 @@ userSchema.pre('save', async function (next) {
   }
 });
 
-// Validate: If verified, must have orgId and deptId
-// Validate: Only VERIFIED normal users must have org + dept
+// Validate: Org/Dept requirements based on role
 userSchema.pre('save', function (next) {
-  if (
-    this.verified &&
-    !['super_admin', 'global'].includes(this.role) &&
-    (!this.orgId || !this.deptId)
-  ) {
+  // Super admin and global users don't need org/dept
+  if (['super_admin', 'global'].includes(this.role)) {
+    return next();
+  }
+
+  // Org admin needs only orgId
+  if (this.role === 'org_admin') {
+    if (this.verified && !this.orgId) {
+      return next(new Error('Org admin must have an organization'));
+    }
+    return next();
+  }
+
+  // Dept admin and verified users need both orgId and deptId
+  if (this.verified && (!this.orgId || !this.deptId)) {
     return next(
       new Error('Verified users must have both organization and department')
     );
   }
+  
   next();
 });
 

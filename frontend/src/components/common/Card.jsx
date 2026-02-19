@@ -1,76 +1,60 @@
 import { cn } from '../../utils/helpers';
 
-const Textarea = ({ 
-  label,
-  name,
-  placeholder,
-  value = '',
-  onChange,
-  onBlur,
-  error,
-  helperText,
-  required = false,
-  disabled = false,
-  rows = 4,
-  maxLength,
-  showCount = false,
+const Card = ({ 
+  children, 
   className,
+  hover = false,
+  padding = true,
   ...props 
 }) => {
   return (
-    <div className="w-full">
-      <div className="flex items-center justify-between mb-1.5">
-        {label && (
-          <label 
-            htmlFor={name} 
-            className="block text-sm font-medium text-gray-700"
-          >
-            {label}
-            {required && <span className="text-red-500 ml-1">*</span>}
-          </label>
-        )}
-        
-        {showCount && maxLength && (
-          <span className={cn(
-            'text-sm',
-            value.length > maxLength ? 'text-red-600' : 'text-gray-500'
-          )}>
-            {value.length}/{maxLength}
-          </span>
-        )}
-      </div>
-      
-      <textarea
-        id={name}
-        name={name}
-        value={value}
-        onChange={onChange}
-        onBlur={onBlur}
-        placeholder={placeholder}
-        disabled={disabled}
-        rows={rows}
-        maxLength={maxLength}
-        className={cn(
-          'w-full px-4 py-2.5 rounded-lg border transition-all duration-200 outline-none resize-none',
-          'focus:ring-2 focus:ring-primary-100',
-          error 
-            ? 'border-red-300 focus:border-red-500 focus:ring-red-100' 
-            : 'border-gray-300 focus:border-primary-500',
-          disabled && 'bg-gray-50 cursor-not-allowed',
-          className
-        )}
-        {...props}
-      />
-      
-      {error && (
-        <p className="mt-1.5 text-sm text-red-600">{error}</p>
+    <div
+      className={cn(
+        'bg-white rounded-xl border border-gray-200 shadow-sm transition-all duration-200',
+        hover && 'hover:shadow-md hover:border-gray-300 cursor-pointer',
+        padding && 'p-6',
+        className
       )}
-      
-      {helperText && !error && (
-        <p className="mt-1.5 text-sm text-gray-500">{helperText}</p>
-      )}
+      {...props}
+    >
+      {children}
     </div>
   );
 };
 
-export default Textarea;
+// Card Header
+Card.Header = ({ children, className }) => (
+  <div className={cn('mb-4 pb-4 border-b border-gray-200', className)}>
+    {children}
+  </div>
+);
+
+// Card Title
+Card.Title = ({ children, className }) => (
+  <h3 className={cn('text-lg font-semibold text-gray-900', className)}>
+    {children}
+  </h3>
+);
+
+// Card Description
+Card.Description = ({ children, className }) => (
+  <p className={cn('text-sm text-gray-600 mt-1', className)}>
+    {children}
+  </p>
+);
+
+// Card Body
+Card.Body = ({ children, className }) => (
+  <div className={cn('', className)}>
+    {children}
+  </div>
+);
+
+// Card Footer
+Card.Footer = ({ children, className }) => (
+  <div className={cn('mt-4 pt-4 border-t border-gray-200', className)}>
+    {children}
+  </div>
+);
+
+export default Card;

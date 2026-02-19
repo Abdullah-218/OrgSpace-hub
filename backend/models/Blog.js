@@ -205,7 +205,7 @@ blogSchema.pre('save', async function (next) {
 blogSchema.pre('save', async function (next) {
   if (this.isNew || this.isModified('orgId') || this.isModified('deptId')) {
     const Department = mongoose.model('Department');
-    const dept = await Department.findById(this.deptId).populate('orgId');
+    const dept = await Department.findById(this.deptId);
 
     if (!dept) {
       return next(new Error('Department not found'));

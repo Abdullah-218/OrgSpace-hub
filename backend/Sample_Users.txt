@@ -1,0 +1,37 @@
+DATABASE SEEDED SUCCESSFULLY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📈 SUMMARY:
+   Users: 14
+   Organizations: 2
+   Departments: 4
+   Blogs: 6
+   Comments: 6
+   Likes: 14
+   Pending Verifications: 2
+
+🔐 LOGIN CREDENTIALS:
+
+   SUPER ADMIN:
+   Email: admin@blogplatform.com
+   Password: admin123
+
+   ORG ADMIN (Stanford):
+   Email: john@stanford.edu
+   Password: password123
+
+   ORG ADMIN (Harvard):
+   Email: jane@harvard.edu
+   Password: password123
+
+   DEPT ADMIN (CS):
+   Email: bob@stanford.edu
+   Password: password123
+
+   VERIFIED USER:
+   Email: alice@stanford.edu
+   Password: password123
+
+   GLOBAL USER:
+   Email: global1@example.com
+   Password: password123

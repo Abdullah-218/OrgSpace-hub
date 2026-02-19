@@ -4,6 +4,7 @@ import { Navbar, Footer, Container, Sidebar, ProtectedRoute } from '../../compon
 import { Card, Button, SearchBar, Loading, EmptyState, Modal, Input, Textarea, ConfirmDialog, Badge } from '../../components/common';
 import { ROUTES, ROLES } from '../../utils/constants';
 import { formatNumber } from '../../utils/helpers';
+import departmentService from '../../services/departmentService';
 import toast from 'react-hot-toast';
 
 const ManageDepartments = () => {
@@ -24,20 +25,14 @@ const ManageDepartments = () => {
 
   const fetchDepartments = async () => {
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/departments/organization/${user.orgId._id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('blog_platform_token')}`,
-          },
-        }
-      );
-      const data = await response.json();
-      if (data.success) {
-        setDepartments(data.data.departments);
+      setLoading(true);
+      const response = await departmentService.getDepartmentsByOrganization(user.orgId._id || user.orgId);
+      if (response.success) {
+        setDepartments(response.data.departments || []);
       }
     } catch (error) {
-      toast.error('Failed to load departments');
+      console.error('Error fetching departments:', error);
+      toast.error(error.response?.data?.message || 'Failed to load departments');
     } finally {
       setLoading(false);
     }
@@ -52,29 +47,24 @@ const ManageDepartments = () => {
 
     setSaving(true);
     try {
-      const url = editingDept
-        ? `${import.meta.env.VITE_API_URL}/departments/${editingDept._id}`
-        : `${import.meta.env.VITE_API_URL}/departments`;
+      const deptData = {
+        ...formData,
+        orgId: user.orgId._id || user.orgId,
+      };
 
-      const response = await fetch(url, {
-        method: editingDept ? 'PATCH' : 'POST',
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('blog_platform_token')}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...formData,
-          orgId: user.orgId._id,
-        }),
-      });
-
-      if (response.ok) {
-        toast.success(editingDept ? 'Department updated!' : 'Department created!');
-        handleCloseModal();
-        fetchDepartments();
+      if (editingDept) {
+        await departmentService.updateDepartment(editingDept._id, deptData);
+        toast.success('Department updated!');
+      } else {
+        await departmentService.createDepartment(deptData);
+        toast.success('Department created!');
       }
+      
+      handleCloseModal();
+      fetchDepartments();
     } catch (error) {
-      toast.error('Operation failed');
+      console.error('Error saving department:', error);
+      toast.error(error.response?.data?.message || 'Operation failed');
     } finally {
       setSaving(false);
     }
@@ -82,23 +72,13 @@ const ManageDepartments = () => {
 
   const handleDelete = async () => {
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/departments/${deleteId}`,
-        {
-          method: 'DELETE',
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('blog_platform_token')}`,
-          },
-        }
-      );
-
-      if (response.ok) {
-        setDepartments(departments.filter(d => d._id !== deleteId));
-        toast.success('Department deleted');
-        setDeleteId(null);
-      }
+      await departmentService.deleteDepartment(deleteId);
+      setDepartments(departments.filter(d => d._id !== deleteId));
+      toast.success('Department deleted');
+      setDeleteId(null);
     } catch (error) {
-      toast.error('Failed to delete department');
+      console.error('Error deleting department:', error);
+      toast.error(error.response?.data?.message || 'Failed to delete department');
     }
   };
 

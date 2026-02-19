@@ -3,6 +3,7 @@ import {
   // Super Admin actions
   assignOrgAdmin,
   getPlatformStats,
+  getAllUsers,
   // Org Admin actions
   assignDeptAdmin,
   removeDeptAdmin,
@@ -40,6 +41,13 @@ router.post('/super/assign-org-admin', authenticate, requireSuperAdmin, assignOr
  * @access  Private (Super Admin only)
  */
 router.get('/super/stats', authenticate, requireSuperAdmin, getPlatformStats);
+
+/**
+ * @route   GET /api/admin/super/users
+ * @desc    Get all users with filtering and pagination
+ * @access  Private (Super Admin only)
+ */
+router.get('/super/users', authenticate, requireSuperAdmin, getAllUsers);
 
 // ==================== ORG ADMIN ROUTES ====================
 

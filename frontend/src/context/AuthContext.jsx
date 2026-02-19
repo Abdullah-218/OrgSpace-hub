@@ -19,6 +19,8 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const navigate = useNavigate();
 
+  console.log('AuthProvider rendering, loading:', loading, 'user:', user);
+
   // Load user from localStorage on mount
   useEffect(() => {
     loadUser();
@@ -143,5 +145,3 @@ export const AuthProvider = ({ children }) => {
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
-
-export default AuthContext;

@@ -1,4 +1,3 @@
-platform/frontend/src/components/common/Select.jsx << 'EOF'
 import { cn } from '../../utils/helpers';
 
 const Select = ({

@@ -89,6 +89,47 @@ export const getPlatformStats = async (req, res) => {
   }
 };
 
+/**
+ * @desc    Get all users (for super admin)
+ * @route   GET /api/admin/super/users
+ * @access  Private (Super Admin)
+ */
+export const getAllUsers = async (req, res) => {
+  try {
+    const { page = 1, limit = 50, role, verified, search } = req.query;
+
+    const query = {};
+    if (role) query.role = role;
+    if (verified !== undefined) query.verified = verified === 'true';
+    if (search) {
+      query.$or = [
+        { name: { $regex: search, $options: 'i' } },
+        { email: { $regex: search, $options: 'i' } },
+      ];
+    }
+
+    const users = await User.find(query)
+      .populate('orgId', 'name')
+      .populate('deptId', 'name')
+      .select('-password')
+      .limit(limit * 1)
+      .skip((page - 1) * limit)
+      .sort({ createdAt: -1 });
+
+    const count = await User.countDocuments(query);
+
+    res.status(200).json({
+      success: true,
+      count: users.length,
+      totalPages: Math.ceil(count / limit),
+      currentPage: page,
+      data: { users },
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 // ==================== ORG ADMIN ACTIONS ====================
 
 /**

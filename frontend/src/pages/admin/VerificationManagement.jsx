@@ -1,4 +1,3 @@
-platform/frontend/src/pages/admin/VerificationManagement.jsx << 'ENDOFFILE'
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { Navbar, Footer, Container, Sidebar, ProtectedRoute } from '../../components/layout';

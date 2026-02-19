@@ -6,6 +6,8 @@ import { routes } from './routes';
 import { Loading } from './components/common';
 
 function App() {
+  console.log('App rendering...');
+  
   return (
     <Router>
       <AuthProvider>

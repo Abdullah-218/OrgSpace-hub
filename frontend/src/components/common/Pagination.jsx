@@ -1,4 +1,3 @@
-platform/frontend/src/components/common/Pagination.jsx << 'EOF'
 import { cn } from '../../utils/helpers';
 
 const Pagination = ({ currentPage, totalPages, onPageChange, className }) => {

@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import { Navbar, Footer, Container } from '../../components/layout';
 import { Card, Button, Badge, Loading, EmptyState } from '../../components/common';
 import blogService from '../../services/blogService';
-import { ROUTES, ROLE_LABELS } from '../../utils/constants';
+import { ROUTES, ROLES, ROLE_LABELS } from '../../utils/constants';
 import { formatNumber, formatDate } from '../../utils/helpers';
 import toast from 'react-hot-toast';
 
@@ -13,6 +13,19 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const [myBlogs, setMyBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  // Redirect admins to their respective dashboards
+  useEffect(() => {
+    if (user) {
+      if (user.role === ROLES.SUPER_ADMIN) {
+        navigate(ROUTES.SUPER_ADMIN_DASHBOARD);
+      } else if (user.role === ROLES.ORG_ADMIN) {
+        navigate(ROUTES.ORG_ADMIN_DASHBOARD);
+      } else if (user.role === ROLES.DEPT_ADMIN) {
+        navigate(ROUTES.DEPT_ADMIN_DASHBOARD);
+      }
+    }
+  }, [user, navigate]);
 
   useEffect(() => {
     fetchMyBlogs();

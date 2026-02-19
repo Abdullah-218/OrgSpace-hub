@@ -1,9 +1,9 @@
-platform/frontend/src/pages/admin/ManageUsers.jsx << 'ENDOFFILE'
 import { useState, useEffect } from 'react';
 import { Navbar, Footer, Container, Sidebar, ProtectedRoute } from '../../components/layout';
 import { Card, Badge, Loading, EmptyState, Avatar, SearchBar, Button } from '../../components/common';
 import { ROUTES, ROLES, ROLE_LABELS } from '../../utils/constants';
 import { formatDate } from '../../utils/helpers';
+import adminService from '../../services/adminService';
 import toast from 'react-hot-toast';
 
 const ManageUsers = () => {
@@ -18,20 +18,14 @@ const ManageUsers = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/users`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('blog_platform_token')}`,
-          },
-        }
-      );
-      const data = await response.json();
-      if (data.success) {
-        setUsers(data.data.users);
+      setLoading(true);
+      const response = await adminService.getAllUsers();
+      if (response.success) {
+        setUsers(response.data.users || []);
       }
     } catch (error) {
-      toast.error('Failed to load users');
+      console.error('Error fetching users:', error);
+      toast.error(error.response?.data?.message || 'Failed to load users');
     } finally {
       setLoading(false);
     }

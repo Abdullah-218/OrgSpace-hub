@@ -19,10 +19,15 @@ const Organizations = () => {
 
   const fetchOrganizations = async () => {
     try {
+      setLoading(true);
       const response = await organizationService.getOrganizations({ limit: 100 });
-      setOrganizations(response.data.organizations);
+      console.log('Organizations response:', response);
+      if (response.success) {
+        setOrganizations(response.data.organizations || []);
+      }
     } catch (error) {
-      toast.error('Failed to load organizations');
+      console.error('Error fetching organizations:', error);
+      toast.error(error.response?.data?.message || 'Failed to load organizations');
     } finally {
       setLoading(false);
     }

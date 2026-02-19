@@ -13,5 +13,5 @@ export { default as Dropdown } from './Dropdown';
 export { default as Pagination } from './Pagination';
 export { default as SearchBar } from './SearchBar';
 export { default as EmptyState } from './EmptyState';
-export { default as ConfirmDialog } from './confirmDialog';
+export { default as ConfirmDialog } from './ConfirmDialog';
 export { default as ImageUpload } from './ImageUpload';
